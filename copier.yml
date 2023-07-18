@@ -44,5 +44,15 @@ docker_compose_version:
   help: What version of docker-compose do you want to use?
   default: 2.20.0
 
+hcloud_token:
+  type: str
+  help: What is your Hetzner Cloud token?
+  default: ""
+
+dns_api_token:
+  type: str
+  help: What is your Hetzner DNS Console token?
+  default: ""
+
 
 

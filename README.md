@@ -1,5 +1,5 @@
 # docker_compose_host_hetzner
-This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS.
+This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS. I use it for personal projects. Use it at your own risk. Creating VPS on hetzner generates costs.
 
 ## Dependecies
 - [Copier](https://copier.readthedocs.io/en/latest/)
@@ -10,6 +10,33 @@ This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS.
     ```
     ansible-galaxy install -r ansible/requirements.yml
     ```
+
+## Generate project
+```
+copier copy gh:jstet/docker_compose_host_hetzner  <project_name>
+```
+This will start an interactive prompt.
+ATTENTION: If you dont want sensitive credentials included in your code, skip the last two questions regarding API tokens.
+
+
+## Steps after Generation
+
+1. Set environment variables
+To use the hetzner apis with terraform you need an [API token](https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/) for the cloud service and an API token for the [DNS console](https://docs.hetzner.com/de/dns-console/dns/general/api-access-token/). Best practice is to set these tokens via the terminal with `export HCLOUD_TOKEN="token"` so they are not included in your code. As I am too lazy however and I am the only one at risk in personal projects I usually use a bash script to do this automatically. This is what the last two questions during project generation are for. If you have answered them, run this code while in root folder:
+    ```
+    source setup.sh
+    ```
+
+2. Initialize terraform
+    ```
+    cd terraform
+    terraform init
+    ```
+3. If you dont want to change the terraform script, run the teraform apply command. This also generates a plan that you can review before approving it.
+    ```
+    terraform apply
+    ```
+
 
 ## Configurable Vars
 - Name of server
