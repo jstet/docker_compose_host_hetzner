@@ -35,6 +35,10 @@ dns_zone:
     help: What is the name of the dns zone you want to create a subdomain for the app in?
     default: jstet.net
 
+subdomain:
+    type: str
+    help: What is the subdomain you want to create?
+
 docker_compose_version:
   type: str
   help: What version of docker-compose do you want to use?
