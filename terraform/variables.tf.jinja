@@ -3,11 +3,11 @@ variable "server" {
   type        = map(any)
   description = "Server configuration map"
   default = {
-    name        = {{server_name}}
-    server_type = {{server_type}}
-    image       = {{server_image}}
-    location    = {{server_location}}
-    backups     = {{server_backup}}
+    name        = "{{server_name}}"
+    server_type = "{{server_type}}"
+    image       = "{{server_image}}"
+    location    = "{{server_location}}"
+    backups     = "{{server_backup}}"
     user = "deploy_user"
   }
 }
@@ -15,25 +15,25 @@ variable "server" {
 variable "docker_compose_version" {
   type        = string
   description = "Docker compose version to install"
-  default     =  {{docker_compose_version}}
+  default     =  "{{docker_compose_version}}"
 } 
 
 
 variable "ssh_key_path"{
   type = string
-  default = {{ssh_key_path}}
+  default = "{{ssh_key_path}}"
 }
 
 
 variable "zone" {
   type = string
-  default = {{dns_zone}}
+  default = "{{dns_zone}}"
 }
 
 
 variable "subdomain"{
   type = string
-  default = {{subdomain}}
+  default = "{{subdomain}}"
 }
 
 
