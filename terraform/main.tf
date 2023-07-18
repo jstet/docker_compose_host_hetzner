@@ -114,7 +114,7 @@ EOF
 
 resource "hetznerdns_record" "main" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = var.subomain
+  name    = var.subdomain
   value   = hcloud_server.main.ipv6_address
   type    = "A"
 }
@@ -128,7 +128,7 @@ resource "local_file" "ansible_inventory" {
   content = templatefile("inventory.tmpl",
     {
       ip   = hcloud_server.main.ipv6_address
-      username = var.server_username
+      username = var.server.user
     }
   )
   filename = "../ansible/hosts"
