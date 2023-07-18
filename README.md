@@ -32,7 +32,7 @@ To use the hetzner apis with terraform you need an [API token](https://docs.hetz
     cd terraform
     terraform init
     ```
-3. If you dont want to change the terraform script, run the teraform apply command. This also generates a plan that you can review before approving it.
+3. If you dont want to change the terraform script, run the teraform apply command. The also generates a plan that you can review before approving it. After approval the VPS will be created.
     ```
     terraform apply
     ```

@@ -49,7 +49,7 @@ resource "hcloud_server" "main" {
     ipv4_enabled = false
     ipv6_enabled = true
   }
-  user_data    = <<EOF
+  user_data = <<EOF
 #cloud-config
 locale: en_US.UTF-8
 timezone: Europe/Berlin
@@ -116,7 +116,8 @@ resource "hetznerdns_record" "main" {
   zone_id = data.hetznerdns_zone.dns_zone.id
   name    = var.subdomain
   value   = hcloud_server.main.ipv6_address
-  type    = "A"
+  type    = "AAA"
+  ttl     = 60
 }
 
 #####################
@@ -137,7 +138,7 @@ resource "local_file" "ansible_inventory" {
 resource "local_file" "group_vars" {
   content = templatefile("group_vars.tmpl",
     {
-      domain    = "${var.subdomain}.${var.zone}"
+      domain = "${var.subdomain}.${var.zone}"
     }
   )
   filename = "../ansible/group_vars/main.yml"
