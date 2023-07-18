@@ -18,12 +18,9 @@ server_location:
     default: nbg1
 
 server_backup: 
-    type: str
+    type: fool
     help: Do you want to enable backup generation?
     default: false
-    choices:
-      - true
-      - false
 
 ssh_key_path:
     type: str
