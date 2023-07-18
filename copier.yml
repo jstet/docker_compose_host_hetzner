@@ -19,8 +19,8 @@ server_location:
 
 server_backup: 
     type: str
-    help: Where do you want to create the server? See https://docs.hetzner.com/cloud/general/locations/
-    default: nbg1
+    help: Do you want to enable backup generation?
+    default: false
     choices:
       - true
       - false
