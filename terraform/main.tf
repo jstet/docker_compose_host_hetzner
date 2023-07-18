@@ -3,7 +3,7 @@ data "hetznerdns_zone" "dns_zone" {
 }
 
 resource "hcloud_firewall" "firewall" {
-  name = "docker_host"
+  name = var.subdomain
   rule {
     direction = "in"
     protocol  = "tcp"
@@ -115,8 +115,8 @@ EOF
 resource "hetznerdns_record" "main" {
   zone_id = data.hetznerdns_zone.dns_zone.id
   name    = var.subdomain
-  value   = hcloud_server.main.ipv6_address
-  type    = "AAA"
+  value   = replace(hcloud_server.main.ipv6_address,"::/64",":1")
+  type    = "AAAA"
   ttl     = 60
 }
 
