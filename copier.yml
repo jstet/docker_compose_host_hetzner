@@ -1,0 +1,44 @@
+server_name:
+    type: str
+    help: What should the server name be?
+    
+server_type:
+    type: str
+    help: What type of server do you want to create? See https://docs.hetzner.com/cloud/servers/overview/
+    default: cx11
+
+server_image: 
+    type: str
+    help: Which image do you want to use? See https://docs.hetzner.com/robot/dedicated-server/operating-systems/standard-images/
+    default: ubuntu-22.04
+
+server_location: 
+    type: str
+    help: Where do you want to create the server? See https://docs.hetzner.com/cloud/general/locations/
+    default: nbg1
+
+server_backup: 
+    type: str
+    help: Where do you want to create the server? See https://docs.hetzner.com/cloud/general/locations/
+    default: nbg1
+    choices:
+      - true
+      - false
+
+ssh_key_path:
+    type: str
+    help: Under which path is your ssh key located?
+    default: /home/jstet/.ssh/id_rsa.pub
+
+dns_zone:
+    type: str
+    help: What is the name of the dns zone you want to create a subdomain for the app in?
+    default: jstet.net
+
+docker_compose_version:
+  type: str
+  help: What version of docker-compose do you want to use?
+  default: 2.20.0
+
+
+

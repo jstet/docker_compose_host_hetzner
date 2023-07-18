@@ -1,0 +1,40 @@
+# Optional configuration
+variable "server" {
+  type        = map(any)
+  description = "Server configuration map"
+  default = {
+    name        = {{server_name}}
+    server_type = {{server_type}}
+    image       = {{server_image}}
+    location    = {{server-location}}
+    backups     = {{server-backup}}
+    user = "deploy_user"
+  }
+}
+
+variable "docker_compose_version" {
+  type        = string
+  description = "Docker compose version to install"
+  default     =  {{docker_compose_version}}
+} 
+
+
+variable "ssh_key_path"{
+  type = string
+  default = {{ssh_key_path}}
+}
+
+
+variable "zone" {
+  type = string
+  default = {{dns_zone}}
+}
+
+
+variable "subdomain"{
+  type = string
+  default = {{subdomain}}
+}
+
+
+

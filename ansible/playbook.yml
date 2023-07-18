@@ -1,0 +1,54 @@
+---
+- hosts: all
+  gather_facts: true
+  become: false
+  vars_files:
+    - group_vars/machine.yml
+    - group_vars/vault.yml
+
+  tasks:
+    - block:
+      - name: Configure server to be CIS compliant
+        include_role:
+          name: ansible-lockdown.ubuntu22-cis
+        vars:
+          ubtu22cis_ipv6_required: true
+
+      become: true
+
+    - name: Create dir for docker compose
+      file:
+        path: "/home/{{  ansible_user   }}/app"
+        state: directory
+        owner: "{{  ansible_user   }}"
+        mode: 0775
+
+    - name: Template docker compose to server
+      template:
+        src: "templates/docker-compose.yml"
+        dest: "/home/{{  ansible_user   }}/app/docker-compose.yml"
+
+    - name: creating network
+      shell: |
+        docker network inspect caddy >/dev/null 2>&1 || \
+        docker network create caddy
+#  START ADDING CODE HERE to send docker compose file including code to server
+#     - name: Create dir for docker compose
+#       file:
+#         path: "/home/{{  ansible_user   }}/caddy"
+#         state: directory
+#         owner: "{{  ansible_user   }}"
+#         mode: 0775
+# 
+#     - name: copy caddy docker compose to server
+#       copy: 
+#         src: files/docker-compose.yml
+#         dest: "/home/{{  ansible_user   }}/caddy/docker-compose.yml"
+# 
+#     - name: deploying caddy
+#       shell: |
+#         cd caddy && docker compose up -d
+# 
+#     - name: deploying app
+#       shell: |
+#         cd app && docker compose up -d
