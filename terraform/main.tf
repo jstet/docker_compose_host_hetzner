@@ -105,7 +105,7 @@ users:
     lock_passwd: true
     shell: /bin/bash
     ssh_authorized_keys:
-    - ${file(var.ssh_key)}
+    - ${file(var.ssh_key_path)}
 
 final_message: "The system is ready, after $UPTIME seconds"
 
@@ -137,7 +137,7 @@ resource "local_file" "ansible_inventory" {
 resource "local_file" "group_vars" {
   content = templatefile("group_vars.tmpl",
     {
-      domain    = "${var.directus_domain}.${var.zone}"
+      domain    = "${var.subdomain}.${var.zone}"
     }
   )
   filename = "../ansible/group_vars/main.yml"
