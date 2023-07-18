@@ -18,7 +18,7 @@ server_location:
     default: nbg1
 
 server_backup: 
-    type: fool
+    type: bool
     help: Do you want to enable backup generation?
     default: false
 
