@@ -16,7 +16,7 @@ This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS. I
 copier copy gh:jstet/docker_compose_host_hetzner  <project_name>
 ```
 This will start an interactive prompt.
-ATTENTION: If you dont want sensitive credentials included in your code, skip the last two questions regarding API tokens.
+ATTENTION: If you dont want sensitive credentials included in your code, answer no to the question regarding creation of setup.sh. Setup.sh is added to .gitignore
 
 
 ## Steps after Generation

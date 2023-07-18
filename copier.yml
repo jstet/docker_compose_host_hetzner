@@ -44,15 +44,22 @@ docker_compose_version:
   help: What version of docker-compose do you want to use?
   default: 2.20.0
 
+setup_sh:
+    type: bool
+    help: Do you want generated a setup.sh?
+    default: false
+
+
 hcloud_token:
   type: str
   help: What is your Hetzner Cloud token?
-  default: ""
+  when: "{% if organization != 'Public domain' %}true{% endif %}"
+ 
 
 dns_api_token:
   type: str
   help: What is your Hetzner DNS Console token?
-  default: ""
+  when: "{% if organization != 'Public domain' %}true{% endif %}"
 
 
 
