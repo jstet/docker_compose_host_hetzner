@@ -43,7 +43,7 @@ docker_compose_version:
 
 setup_sh:
     type: bool
-    help: Do you want generated a setup.sh? !! This file will contain the sensitive credentials provided by you in the following questions!!
+    help: Do you want generated a setup.sh? !! This file will contain sensitive credentials provided by you in the following questions !!
     default: false
 
 

@@ -128,7 +128,7 @@ resource "local_file" "ansible_inventory" {
   content = templatefile("inventory.tmpl",
     {
       ip   = hcloud_server.main.ipv6_address
-      username = var.server.user
+      user = var.server.user
     }
   )
   filename = "../ansible/hosts"
