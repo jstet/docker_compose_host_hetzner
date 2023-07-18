@@ -7,7 +7,7 @@ variable "server" {
     server_type = "{{server_type}}"
     image       = "{{server_image}}"
     location    = "{{server_location}}"
-    backups     = "{% if server_backup } true {% else %} false {% endif %}"
+    backups     = {% if server_backup } "true" {% else %} "false" {% endif %}
     user = "deploy_user"
   }
 }
