@@ -3,7 +3,7 @@ data "hetznerdns_zone" "dns_zone" {
 }
 
 resource "hcloud_firewall" "firewall" {
-  name = "docker_host"
+  name = var.subdomain
   rule {
     direction = "in"
     protocol  = "tcp"
@@ -36,6 +36,14 @@ resource "hcloud_firewall" "firewall" {
 
 }
 
+resource "hcloud_primary_ip" "main" {
+  name          = var.subdomain
+  datacenter    = "${var.server.location}-dc3"
+  type          = "ipv6"
+  assignee_type = "server"
+  auto_delete   = true
+}
+
 
 # Create server for deployment
 resource "hcloud_server" "main" {
@@ -46,25 +54,24 @@ resource "hcloud_server" "main" {
   backups      = var.server.backups
   firewall_ids = [hcloud_firewall.firewall.id]
   public_net {
-    ipv4_enabled = false
-    ipv6_enabled = true
+    ipv6 = hcloud_primary_ip.main.id
   }
   user_data = <<EOF
 #cloud-config
+
+# Set the locale and timezone
 locale: en_US.UTF-8
 timezone: Europe/Berlin
+
+# Update and upgrade packages
 package_update: true
 package_upgrade: true
 package_reboot_if_required: false
+
+# Manage the /etc/hosts file
 manage_etc_hosts: true
 
-network:
-  version: 2
-  ethernets:
-    eth0:
-      nameservers:
-        addresses: [8.8.8.8, 8.8.4.4]
-
+# Install required packages
 packages:
   - apt-transport-https
   - ca-certificates
@@ -74,26 +81,42 @@ packages:
   - fail2ban
   - unattended-upgrades
 
+# Add Docker GPG key and repository
 runcmd:
+  - echo "Creating /etc/apt/keyrings directory" && logger "Keyrings directory created"
   - install -m 0755 -d /etc/apt/keyrings
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "Adding Docker GPG key" && logger "Docker GPG key added"
+  - curl -fsSL --insecure https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   - chmod a+r /etc/apt/keyrings/docker.gpg
+  - echo "Adding Docker repository" && logger "Docker repository added"
   - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-  - apt-get update
-  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Update package lists and install Docker packages
+  - echo "Updating package lists" && logger "Package lists updated"
+  - apt-get update && logger "Package update completed"
+  - echo "Installing Docker packages" && logger "Docker packages installation started"
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && logger "Docker packages installed"
+
+# Configure fail2ban and SSH server
+  - echo "Configuring fail2ban" && logger "Fail2ban configured"
   - printf "[sshd]\nenabled = true\nbanaction = iptables-multiport" > /etc/fail2ban/jail.local
   - systemctl enable fail2ban
+
+  - echo "Configuring SSH server" && logger "SSH server configured"
   - sed -i -e '/^\(#\|\)PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)X11Forwarding/s/^.*$/X11Forwarding no/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)MaxAuthTries/s/^.*$/MaxAuthTries 2/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)AuthorizedKeysFile/s/^.*$/AuthorizedKeysFile .ssh\/authorized_keys/' /etc/ssh/sshd_config
-  - systemctl daemon-reload
+  - sed -i -e '/^\(#\|\)AuthorizedKeysFile
+
+  # Restart and enable Docker service
+  - echo "Restarting Docker service" && logger "Docker service restarted"
   - systemctl restart docker
   - systemctl enable docker
 
+# Configure users
 users:
   - default
   - name: ${var.server.user}
@@ -105,6 +128,8 @@ users:
       - ${file(var.ssh_key_path)}
 
 final_message: "The system is ready, after $UPTIME seconds"
+
+
 EOF
 }
 

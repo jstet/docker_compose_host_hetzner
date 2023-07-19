@@ -3,25 +3,25 @@
   gather_facts: true
   become: false
   vars_files:
-    - group_vars/machine.yml
+    - group_vars/main.yml
     - group_vars/vault.yml
 
   tasks:
     - block:
       - name: Configure server to be CIS compliant
         include_role:
-          name: ansible-lockdown.ubuntu22-cis
+          name: ansible-lockdown.ubuntu20-cis
         vars:
-          ubtu22cis_ipv6_required: true
-          ubtu22cis_rule_1_1_1_2: false
+          ubtu20cis_ipv6_required: true
+          ubtu20cis_rule_1_1_1_2: false
           ubtu22cis_rule_5_3_1: false
-          ubtu22cis_rule_5_3_2: false
-          ubtu22cis_rule_5_3_3: false
-          ubtu22cis_rule_5_3_4: false
-          ubtu22cis_rule_5_3_5: false
-          ubtu22cis_rule_5_3_6: false
-          ubtu22cis_rule_5_3_7: false
-          ubtu22cis_sshd:
+          ubtu20cis_rule_5_3_2: false
+          ubtu20cis_rule_5_3_3: false
+          ubtu20cis_rule_5_3_4: false
+          ubtu20cis_rule_5_3_5: false
+          ubtu20cis_rule_5_3_6: false
+          ubtu20cis_rule_5_3_7: false
+          ubtu20cis_sshd:
             allow_users: "{{ ansible_user }}"
       become: true
 
@@ -46,15 +46,19 @@
       shell: |
         cd caddy && docker compose up -d
 
-    # - name: Clone app
-    #   shell: |
-    #     git clone git@github.com:jstet/myrtle.git
+    #     Example:
+
+    # - name: Git checkout
+    #   ansible.builtin.git:
+    #     repo: 'https://github.com/jstet/myrtle.git'
+    #     dest: /home/{{  ansible_user   }}/myrtle
+    #
     #
     # - name: Template docker compose to server
     #   template:
     #     src: "templates/docker-compose.yml"
     #     dest: "/home/{{  ansible_user   }}/myrtle/docker-compose.yml"
-    #
+
     # - name: deploying app
     #   shell: |
     #     cd myrtle && docker compose up -d

@@ -9,8 +9,8 @@ server_type:
 
 server_image: 
     type: str
-    help: Which image do you want to use? See https://docs.hetzner.com/robot/dedicated-server/operating-systems/standard-images/
-    default: ubuntu-22.04
+    help: Which image do you want to use? See https://docs.hetzner.com/robot/dedicated-server/operating-systems/standard-images/operating-systems/standard-images/
+    default: ubuntu-20.04
 
 server_location: 
     type: str

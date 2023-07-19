@@ -1,89 +1,19 @@
 version: '3'
 services:
-  cache:
-    restart: always
-    container_name: cache
-    image: redis:6-alpine
-    networks:
-      - directus
+
+  myrtle:
+    container_name: myrtle
+    image: myrtle
+    build: ./
     ports:
-      - 6379
-
-  directus_database:
-    container_name: directus_database
-    ports:
-      - 8055
-    image: postgis/postgis:13-master
-    volumes:
-      - directus_database:/var/lib/postgresql/data
-    networks:
-      - directus
-    environment:
-      POSTGRES_USER: 'directus'
-      POSTGRES_PASSWORD: 'directus'
-      POSTGRES_DB: 'directus'
-
-  directus:
-    restart: always
-    container_name: directus
-    image: directus/directus:latest
-    ports:
-      - 8055:8055
-    networks:
-      - directus
-      - caddy
-    depends_on:
-      - cache
-     
-    environment:
-      KEY: '{{  directus_key  }}'
-      SECRET: '{{  directus_secret  }}'
-
-      DB_CLIENT: 'pg'
-      DB_HOST: 'directus_database'
-      DB_PORT: '5432'
-      DB_DATABASE: 'directus'
-      DB_USER: 'directus'
-      DB_PASSWORD: 'directus'
-
-
-      CACHE_ENABLED: 'true'
-      CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:6379'
-      CACHE_TTL: "60s"
-      
-      ADMIN_EMAIL: '{{ directus_admin_mail }}'
-      ADMIN_PASSWORD: '{{  directus_admin_pw  }}'
-
-      EMAIL_TRANSPORT: 'smtp'
-      EMAIL_FROM: '{{ smtp_user }}'
-      EMAIL_SMTP_HOST: 'smtp.gmail.com'
-      EMAIL_SMTP_PORT: 465
-      EMAIL_SMTP_USER: '{{ smtp_user }}'
-      EMAIL_SMTP_PASSWORD: "{{ smtp_password }}"
-      EMAIL_SMTP_SECURE: 'true'
-      PUBLIC_URL: "https://{{  domain  }}"
-
-      CORS_ENABLED: "true"
-      CORS_ORIGIN: "true"
-
-      STORAGE_LOCAL_ROOT: "/directus/uploads"
-    volumes:
-      - directus_storage:/directus/uploads
+      - 8000:8000
     labels:
       caddy: "{{ domain }}"
-      caddy.reverse_proxy: "{{"{{upstreams 8055}}"}}"
-
-  
+      caddy.reverse_proxy: "{% raw %}{{upstreams 8000}}{% endraw %}"
+    networks:
+      - caddy
 
 networks:
   caddy:
     external: true
-  directus:
-
-volumes:
-  directus_database:
-  directus_storage: 
-
-  
 

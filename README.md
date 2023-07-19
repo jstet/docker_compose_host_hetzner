@@ -36,7 +36,7 @@ To use the hetzner apis with terraform you need an [API token](https://docs.hetz
     ```
     terraform apply
     ```
-4. Add deployment code to ansible/playbook.yml. For example add a docker compose template and copy it to server.
+4. Add deployment code to ansible/playbook.yml. For example add a docker compose template and copy it to server. Wait some time before running the ansible playbook, because the cloud init script needs to finish first
 
 ## Configurable Vars
 - Name of server
