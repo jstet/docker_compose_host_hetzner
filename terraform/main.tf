@@ -55,6 +55,7 @@ resource "hcloud_server" "main" {
   firewall_ids = [hcloud_firewall.firewall.id]
   public_net {
     ipv6 = hcloud_primary_ip.main.id
+    ipv4_enabled = false
   }
   user_data = <<EOF
 #cloud-config
