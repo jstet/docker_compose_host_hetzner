@@ -15,7 +15,7 @@ server_image:
 server_location: 
     type: str
     help: Where do you want to create the server? See https://docs.hetzner.com/cloud/general/locations/
-    default: nbg1
+    default: hel1
 
 server_backup: 
     type: bool

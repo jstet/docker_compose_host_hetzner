@@ -38,8 +38,8 @@ resource "hcloud_firewall" "firewall" {
 
 resource "hcloud_primary_ip" "main" {
   name          = var.subdomain
-  datacenter    = "${var.server.location}-dc3"
-  type          = "ipv6"
+  datacenter    = "${var.server.location}-dc2"
+  type          = "ipv4"
   assignee_type = "server"
   auto_delete   = true
 }
@@ -54,8 +54,8 @@ resource "hcloud_server" "main" {
   backups      = var.server.backups
   firewall_ids = [hcloud_firewall.firewall.id]
   public_net {
-    ipv6 = hcloud_primary_ip.main.id
-    ipv4_enabled = false
+    ipv4 = hcloud_primary_ip.main.id
+    ipv6_enabled = false
   }
   user_data = <<EOF
 #cloud-config
@@ -103,15 +103,6 @@ runcmd:
   - printf "[sshd]\nenabled = true\nbanaction = iptables-multiport" > /etc/fail2ban/jail.local
   - systemctl enable fail2ban
 
-  - echo "Configuring SSH server" && logger "SSH server configured"
-  - sed -i -e '/^\(#\|\)PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)X11Forwarding/s/^.*$/X11Forwarding no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)MaxAuthTries/s/^.*$/MaxAuthTries 2/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config
-  - sed -i -e '/^\(#\|\)AuthorizedKeysFile
-
   # Restart and enable Docker service
   - echo "Restarting Docker service" && logger "Docker service restarted"
   - systemctl restart docker
@@ -137,8 +128,8 @@ EOF
 resource "hetznerdns_record" "main" {
   zone_id = data.hetznerdns_zone.dns_zone.id
   name    = var.subdomain
-  value   = replace(hcloud_server.main.ipv6_address,"::/64",":1")
-  type    = "AAAA"
+  value   = hcloud_server.main.ipv4_address
+  type    = "A"
   ttl     = 60
 }
 
@@ -150,7 +141,7 @@ resource "hetznerdns_record" "main" {
 resource "local_file" "ansible_inventory" {
   content = templatefile("inventory.tmpl",
     {
-      ip   = hcloud_server.main.ipv6_address
+      ip   = hcloud_server.main.ipv4_address
       user = var.server.user
     }
   )

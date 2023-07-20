@@ -6,7 +6,7 @@ services:
     image: myrtle
     build: ./
     ports:
-      - 8000:8000
+      - 8000
     labels:
       caddy: "{{ domain }}"
       caddy.reverse_proxy: "{% raw %}{{upstreams 8000}}{% endraw %}"
