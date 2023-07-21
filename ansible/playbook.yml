@@ -18,7 +18,7 @@
           ubtu20cis_section3_patch: false
           ubtu20cis_section4_patch: true
           ubtu20cis_section5_patch: true
-          ubtu20cis_section6_patch: true
+          ubtu20cis_section6_patch: false
           ubtu20cis_rule_1_1_1_2: false
           ubtu20cis_sshd:
             log_level: "INFO"
@@ -32,13 +32,15 @@
             max_sessions: 2
             allow_users: "{{ ansible_user }}"
           ubtu20cis_ipv4_required: true
+          ubtu20cis_no_owner_adjust: false
+          ubtu20cis_no_group_adjust: false
       become: true
 
     - name: Unconditionally reboot the machine with all defaults
       ansible.builtin.reboot:
       become: true
 
-    - name: Create dir for docker compose
+    - name: Create dir for caddy
       file:
         path: "/home/{{  ansible_user   }}/caddy"
         state: directory
@@ -50,7 +52,7 @@
         src: files/docker-compose.yml
         dest: "/home/{{  ansible_user   }}/caddy/docker-compose.yml"
 
-    - name: creating network
+    - name: creating network for caddy
       shell: |
         docker network inspect caddy >/dev/null 2>&1 || \
         docker network create caddy
@@ -59,19 +61,9 @@
       shell: |
         cd caddy && docker compose up -d
 
-    - name: Git checkout
-      ansible.builtin.git:
-        repo: 'https://github.com/jstet/myrtle.git'
-        dest: /home/{{  ansible_user   }}/myrtle
 
 
-    - name: Template docker compose to server
-      template:
-        src: "templates/docker-compose.yml"
-        dest: "/home/{{  ansible_user   }}/myrtle/docker-compose.yml"
 
-    - name: deploying app
-      shell: |
-        cd /home/{{  ansible_user   }}/myrtle && docker compose build --no-cache && docker compose up -d
+
 
 
