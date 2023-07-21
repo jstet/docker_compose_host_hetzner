@@ -1,7 +1,7 @@
 # docker_compose_host_hetzner
 This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS. I use it for personal projects. Use it at your own risk. Creating VPS on hetzner generates costs.
 
-## Dependecies
+## Dependencies
 - [Copier](https://copier.readthedocs.io/en/latest/)
 - Terraform
 - Ansible

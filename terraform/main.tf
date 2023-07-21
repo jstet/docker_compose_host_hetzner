@@ -98,7 +98,7 @@ runcmd:
   - echo "Installing Docker packages" && logger "Docker packages installation started"
   - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && logger "Docker packages installed"
 
-# Configure fail2ban and SSH server
+# Configure fail2ban 
   - echo "Configuring fail2ban" && logger "Fail2ban configured"
   - printf "[sshd]\nenabled = true\nbanaction = iptables-multiport" > /etc/fail2ban/jail.local
   - systemctl enable fail2ban
