@@ -5,7 +5,7 @@ This is a Copier IaC template to deploy a docker compose app on a Hetzner VPS. I
 - [Copier](https://copier.readthedocs.io/en/latest/)
 - Terraform
 - Ansible
-- Ansible Role UBUNTU22-CIS: 
+- Ansible Role UBUNTU20-CIS:
 
     ```
     ansible-galaxy install -r ansible/requirements.yml
